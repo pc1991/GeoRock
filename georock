@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Dec 17 21:15:05 2022
+
+@author: christian
+"""
+
+import PIL
+print('Pillow Version:', PIL.__version__)
+
+from PIL import Image
+image = Image.open('/Users/christian/Downloads/sample-location-photos/1001a.jpg')
+print(image.format)
+print(image.mode)
+print(image.size)
+image.show()
+
+gs_image = image.convert(mode='L')
+gs_image.save('1001a_gs.jpg')
+image2 = Image.open('1001a_gs.jpg')
+image2.show()
+
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+
+mobile = tf.keras.applications.mobilenet.MobileNet()
+
+filename = '/Users/christian/Downloads/sample-location-photos/1001a.jpg'
+
+from tensorflow.keras.preprocessing import image
+img = image.load_img(filename, target_size = (224,224))
+plt.imshow(img)
+
+resized_img = image.img_to_array(img)
+final_image = np.expand_dims(resized_img,axis=0)
+final_image = tf.keras.applications.mobilenet.preprocess_input(final_image)
+
+resized_img.shape
+final_image.shape
+
+predictions = mobile.predict(final_image)
+
+print(predictions)
+
+from tensorflow.keras.applications import imagenet_utils
+
+results = imagenet_utils.decode_predictions(predictions)
+print(results)
